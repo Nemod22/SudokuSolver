@@ -4,7 +4,6 @@ from tensorflow.keras.models import load_model
 import imutils
 from sudoku_solver import solve
 
-classes = np.arange(0, 10)
 model = load_model('sudoku_app/model-OCR.h5')
 input_size = 48
 
@@ -56,8 +55,8 @@ def split_boxes(board):
         cols = np.hsplit(r,9)
         for box in cols:
             box = cv2.resize(box, (input_size, input_size))/255.0
-            cv2.imshow("Splitted block", box)
-            cv2.waitKey(50)
+            # cv2.imshow("Splitted block", box)
+            # cv2.waitKey(50)
             boxes.append(box)
     cv2.destroyAllWindows()
     return boxes
@@ -84,7 +83,7 @@ def displayNumbers(img, numbers, color=(0, 255, 0)):
     return img
 
 
-def solve_from_image_and_display(image_path):
+def solve_from_image_and_display(image_path, output_path):
     try:
         img = cv2.imread(image_path)
         # cv2.imshow('kazi', img)
@@ -104,12 +103,11 @@ def solve_from_image_and_display(image_path):
 
         predicted_numbers = []
         # get classes from prediction
+        classes = np.arange(0, 10)
         for i in prediction: 
             index = (np.argmax(i)) # returns the index of the maximum number of the array
             predicted_number = classes[index]
             predicted_numbers.append(predicted_number)
-
-        # print(predicted_numbers)
 
         # reshape the list 
         board_num = np.array(predicted_numbers).astype('uint8').reshape(9, 9)
@@ -132,12 +130,13 @@ def solve_from_image_and_display(image_path):
         inv = get_InvPerspective(img, solved_board_mask, location)
         # cv2.imshow("Inverse Perspective", inv)
         combined = cv2.addWeighted(img, 0.7, inv, 1, 0)
-        cv2.imshow("Final result", combined)
+        cv2.imwrite(output_path, combined)
+        # cv2.imshow("Final result", combined)
         # cv2.waitKey(0)
             
-        cv2.imshow("Input image", img)
+        # cv2.imshow("Input image", img)
         # cv2.imshow("Board", board)
-        cv2.waitKey(0)
+        # cv2.waitKey(0)
         cv2.destroyAllWindows()
         
     except Exception as e:
@@ -145,4 +144,4 @@ def solve_from_image_and_display(image_path):
         
 
 
-if __name__ == "__main__": solve_from_image_and_display('sudoku_app/camera.png')
+if __name__ == "__main__": solve_from_image_and_display('sudoku_app/sudoku.jpg', "sudoku_app/solved.png")

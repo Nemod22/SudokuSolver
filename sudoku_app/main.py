@@ -6,7 +6,9 @@ from kivy.uix.image import Image
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.camera import Camera
 
-class CameraApp(App):
+from sudoku_image_recognition import solve_from_image_and_display
+
+class Sudoku(App):
     def build(self):
         self.layout = BoxLayout(orientation='vertical')
         self.camera = Camera(play=True)
@@ -20,7 +22,8 @@ class CameraApp(App):
 
     def take_photo(self, *args):
         self.camera.export_to_png("sudoku_app/photo.png")
-        self.image = Image(source="photo.png", nocache=True)
+        solve_from_image_and_display("sudoku_app/photo.png", "sudoku_app/solved.png")
+        self.image = Image(source="solved.png", nocache=True)
         self.layout.clear_widgets()
         self.layout.add_widget(self.image)
 
@@ -37,4 +40,4 @@ class CameraApp(App):
         self.layout.add_widget(self.take_photo_button)
 
 if __name__ == '__main__':
-    CameraApp().run()
+    Sudoku().run()
