@@ -18,8 +18,8 @@ def find_board(img):
     contours  = imutils.grab_contours(keypoints)
 
     newimg = cv2.drawContours(img.copy(), contours, -1, (0, 255, 0), 3)
-    cv2.imshow("Contour", newimg)
-    cv2.waitKey()
+    # cv2.imshow("Contour", newimg)
+    # cv2.waitKey()
 
 
     contours = sorted(contours, key=cv2.contourArea, reverse=True)[:15]
@@ -27,7 +27,8 @@ def find_board(img):
     
     # Finds rectangular contour
     for contour in contours:
-        approx = cv2.approxPolyDP(contour, 15, True)
+        perimeter = cv2.arcLength(contour, True)
+        approx = cv2.approxPolyDP(contour,perimeter * 0.02 , True)
         if len(approx) == 4:
             location = approx
             break
