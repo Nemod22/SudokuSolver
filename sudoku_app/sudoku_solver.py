@@ -36,4 +36,4 @@ def solve(t):
     if sestopaj([(i, j) for i in range(9) for j in range(9) if t[i][j] == 0]):
         return t
     else:
-        return None
+        return False

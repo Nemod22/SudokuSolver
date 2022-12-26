@@ -1,41 +1,51 @@
+import kivy
+kivy.require('2.1.0')
+
+from kivy.app import App
 from kivy.uix.button import Button
+from kivy.uix.image import Image
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.camera import Camera
-from kivy.app import App
+from kivy.utils import platform
+import os
 from sudoku_image_recognition import solve_from_image_and_display
 
-
-class CameraExample(App):
-
+class Sudoku(App):
     def build(self):
-        layout = BoxLayout(orientation='vertical')
+        if platform == 'android':
+            from android.permissions import request_permissions, Permission
+            request_permissions([
+            Permission.CAMERA,
+            Permission.WRITE_EXTERNAL_STORAGE,
+            Permission.READ_EXTERNAL_STORAGE])
+        self.layout = BoxLayout(orientation='vertical')
+        self.camera = Camera(play=True)
+        self.layout.add_widget(self.camera)
 
-        # Create a camera object
+        self.take_photo_button = Button(text="Take Photo")
+        self.take_photo_button.bind(on_press=self.take_photo)
+        self.layout.add_widget(self.take_photo_button)
 
-        self.cameraObject = Camera(play=False)
-        self.cameraObject.play = True
-        self.cameraObject.resolution = (300, 300)  # Specify the resolution
+        return self.layout
 
-        # Create a button for taking photograph
+    def take_photo(self, *args):
+        self.camera.export_to_png((os.path.join(os.getcwd(), 'sudoku_app/photo.png')))
+        solve_from_image_and_display(os.path.join(os.getcwd(), 'sudoku_app/photo.png'), os.path.join(os.getcwd(), 'sudoku_app/solved.png'))
+        self.image = Image(source=os.path.join(os.getcwd(), 'sudoku_app/solved.png'), nocache=True)
+        self.layout.clear_widgets()
+        self.layout.add_widget(self.image)
 
-        self.camaraClick = Button(text="Take Photo")
-        self.camaraClick.size_hint = (.5, .2)
-        self.camaraClick.pos_hint = {'x': .25, 'y': .75}
-        self.camaraClick.bind(on_press=self.onCameraClick)
+        self.retake_photo_button = Button(text="Retake Photo")
+        self.retake_photo_button.bind(on_press=self.retake_photo)
+        self.layout.add_widget(self.retake_photo_button)
 
-        layout.add_widget(self.cameraObject)
-        layout.add_widget(self.camaraClick)
+    def retake_photo(self, *args):
+        self.layout.clear_widgets()
+        self.layout.add_widget(self.camera)
 
-        return layout
-
-    def onCameraClick(self, *args):
-        path = 'sudoku_app/camera.png'
-        self.cameraObject.export_to_png(path)
-        solve_from_image_and_display(path)
-
-# Start the Camera App
-
+        self.take_photo_button = Button(text="Take Photo")
+        self.take_photo_button.bind(on_press=self.take_photo)
+        self.layout.add_widget(self.take_photo_button)
 
 if __name__ == '__main__':
-    
-    CameraExample().run()
+    Sudoku().run()
