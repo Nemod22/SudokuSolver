@@ -114,7 +114,7 @@ def solve_from_image_and_display(image_path, output_path):
 
         # reshape the list 
         board_num = np.array(predicted_numbers).astype('uint8').reshape(9, 9)
-        # print(board_num)
+        print(board_num)
         # solve the board
         solved_board_nums = solve(board_num.tolist())
         #print(solved_board_nums)
