@@ -30,6 +30,14 @@ class Sudoku(App):
             # set orientation according to user's preference
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER)
 
+            from camera4kivy.preview_camerax import PreviewCameraX  
+            #method/monkey patching where  the image gets saved
+            def capture_photo(self, location = '',  subdir = '', name = ''):
+                if self._camera:
+                    self.capture_in_progress = True
+                    self._camera.capture_photo(subdir, name, True)
+            
+            PreviewCameraX.capture_photo = capture_photo
 
     def on_stop(self):
         self.preview.disconnect_camera()
@@ -47,7 +55,12 @@ class Sudoku(App):
         return self.layout
 
     def take_photo(self, *args):
-        self.preview.capture_photo(location='picture_temp', subdir = '.', name = 'photo')
+        if platform == 'android':
+            from android.storage import app_storage_path
+            self.preview.capture_photo(location='', subdir = 'picture_temp', name = 'photo.jpg')
+        else:
+            self.preview.capture_photo(location='picture_temp', subdir = '.', name = 'photo')
+            
         solve_from_image_and_display(os.path.join(os.getcwd(), 'picture_temp/photo.jpg'), os.path.join(os.getcwd(), 'picture_temp/solved.jpg'))
         self.image = Image(source=os.path.join(os.getcwd(), 'picture_temp/solved.jpg'), nocache=True)
         self.layout.clear_widgets()
