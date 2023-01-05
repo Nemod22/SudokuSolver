@@ -12,7 +12,37 @@ def valid_options(t, i, j):
                   for j in range(box_x*3, box_x*3+3)}
     return s
 
+def is_valid_board(t):
+    #checks if any number (excluding zero), is in list more than once
+    def distinct(l):
+        for i in l:
+            if i != 0:
+                if l.count(i) > 1:
+                    return False
+        return True
+    
+    for row in t:
+        if not distinct(row): return False
+    
+    for column in [[t[i][j] for i in range(9)] for j in range(9)]:
+        if not distinct(column): return False
+
+    for box_x in range(3):
+        for box_y in range(3):
+            if not distinct([t[i][j] for i in range(box_y*3, box_y*3+3) for j in range(box_x*3, box_x*3+3)]):
+                return False
+
+    
+    return True
+
+
 def solve(t):
+    print('solving started')
+
+    if not is_valid_board(t):
+        print('Not valid board')
+        return False
+    
     def sestopaj(p):
         if len(p) == 0:
             return True
@@ -34,6 +64,8 @@ def solve(t):
             return False
 
     if sestopaj([(i, j) for i in range(9) for j in range(9) if t[i][j] == 0]):
+        print('done-s')
         return t
     else:
         return False
+        print('done-f')

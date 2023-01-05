@@ -13,7 +13,7 @@ model.load(os.path.join(os.getcwd(), 'model.tflite'))
 input_size = 48 #dimensions model was trained on
 
 
-def find_board(img,n):
+def find_board(img):
     """Takes an image as input and finds a sudoku board inside of the image"""
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     bfilter = cv2.bilateralFilter(gray, 13, 20, 20)
@@ -26,7 +26,7 @@ def find_board(img,n):
     # cv2.waitKey()
 
 
-    contours = sorted(contours, key=cv2.contourArea, reverse=True)[n:15]
+    contours = sorted(contours, key=cv2.contourArea, reverse=True)[:15]
     location = None
     
     # Finds rectangular contour
@@ -91,10 +91,11 @@ def displayNumbers(img, numbers, color=(0, 255, 0)):
 def solve_from_image_and_display(image_path, output_path):
     try:
         img = cv2.imread(image_path)
+        img = imutils.resize(img, width=1080)
         # cv2.imshow('kazi', img)
         # cv2.waitKey()
         # extract board from input image
-        board, location = find_board(img,0)
+        board, location = find_board(img)
         gray = cv2.cvtColor(board, cv2.COLOR_BGR2GRAY)
         # print(gray.shape)
         rois = split_boxes(gray)
@@ -114,7 +115,7 @@ def solve_from_image_and_display(image_path, output_path):
 
         # reshape the list 
         board_num = np.array(predicted_numbers).astype('uint8').reshape(9, 9)
-        # print(board_num)
+        print(board_num)
         # solve the board
         solved_board_nums = solve(board_num.tolist())
         #print(solved_board_nums)
