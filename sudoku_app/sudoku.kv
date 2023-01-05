@@ -9,14 +9,3 @@
 <Button>:
     size_hint: (0.3, 0.2)
     pos_hint: {'center_x': 0.5}
-
-<Camera>:
-    id: camera
-    play: False
-    canvas.before:
-        PushMatrix
-        Rotate:
-            angle: 0
-            origin: self.center
-    canvas.after:
-        PopMatrix
