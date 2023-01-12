@@ -8,6 +8,7 @@ from kivy.uix.boxlayout import BoxLayout
 # from kivy.uix.camera import Camera #poorly behaves on android
 from camera4kivy import Preview
 from kivy.utils import platform
+from kivy.clock import mainthread
 import os
 from sudoku_image_recognition import solve_from_image_and_display
 
@@ -40,26 +41,10 @@ class Sudoku(App):
 
     def on_stop(self):
         self.preview.disconnect_camera()
-  
-        
-    def build(self):
-        self.layout = BoxLayout(orientation='vertical')
-        self.preview = Preview()
-        self.preview.connect_camera(enable_analyze_pixels = True)
-        self.layout.add_widget(self.preview)
-        self.take_photo_button = Button(text="Take Photo")
-        self.take_photo_button.bind(on_press=self.take_photo)
-        self.layout.add_widget(self.take_photo_button)
 
-        return self.layout
-
-    def take_photo(self, *args):
-        if platform == 'android':
-            from android.storage import app_storage_path
-            self.preview.capture_photo(location='', subdir = 'picture_temp', name = 'photo.jpg')
-        else:
-            self.preview.capture_photo(location='picture_temp', subdir = '.', name = 'photo')
-
+    @mainthread
+    def my_method(self, path):
+        print('neki')
         solve_from_image_and_display(os.path.join(os.getcwd(), 'picture_temp/photo.jpg'), os.path.join(os.getcwd(), 'picture_temp/solved.jpg'))
         self.image = Image(source=os.path.join(os.getcwd(), 'picture_temp/solved.jpg'), nocache=True)
         self.layout.clear_widgets()
@@ -68,6 +53,28 @@ class Sudoku(App):
         self.retake_photo_button = Button(text="Retake Photo")
         self.retake_photo_button.bind(on_press=self.retake_photo)
         self.layout.add_widget(self.retake_photo_button)
+        
+    def build(self):
+        self.layout = BoxLayout(orientation='vertical')
+        self.preview = Preview()
+        self.preview.connect_camera(enable_analyze_pixels = True, filepath_callback=self.my_method)
+        self.layout.add_widget(self.preview)
+        self.take_photo_button = Button(text="Take Photo")
+        self.take_photo_button.bind(on_press=self.take_photo)
+        self.layout.add_widget(self.take_photo_button)
+
+        return self.layout
+
+
+    def take_photo(self, *args):
+        #captures photo and calls mymethod on completion
+        if platform == 'android':
+            from android.storage import app_storage_path
+            self.preview.capture_photo(location='', subdir = 'picture_temp', name = 'photo.jpg')
+
+        else:
+            self.preview.capture_photo(location='picture_temp', subdir = '.', name = 'photo')
+
 
     def retake_photo(self, *args):
         self.layout.clear_widgets()

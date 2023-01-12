@@ -5,10 +5,8 @@ import imutils
 from sudoku_solver import solve
 from model import TensorFlowModel
 
-# from tensorflow.keras.models import load_model
-# model = load_model('model-OCR.h5')
+
 model = TensorFlowModel()
-# model.load(os.path.join(os.getcwd(), 'model.tflite'))
 model.load(os.path.join(os.getcwd(), 'model.tflite'))
 input_size = 48 #dimensions model was trained on
 
@@ -25,14 +23,13 @@ def find_board(img):
     # cv2.imshow("Contour", newimg)
     # cv2.waitKey()
 
-
     contours = sorted(contours, key=cv2.contourArea, reverse=True)[:15]
     location = None
     
-    # Finds rectangular contour
+    # Finds the biggest rectangular contour
     for contour in contours:
         perimeter = cv2.arcLength(contour, True)
-        approx = cv2.approxPolyDP(contour,perimeter * 0.02 , True)
+        approx = cv2.approxPolyDP(contour,perimeter * 0.04 , True)
         if len(approx) == 4:
             location = approx
             break
@@ -50,7 +47,6 @@ def get_perspective(img, location, height = 900, width = 900):
     result = cv2.warpPerspective(img, matrix, (width, height))
     return result
 
-# split the board into 81 individual images
 def split_boxes(board):
     """Takes a sudoku board and split it into 81 cells. 
         each cell contains an element of that board either given or an empty cell."""
