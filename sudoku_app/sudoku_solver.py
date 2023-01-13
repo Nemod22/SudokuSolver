@@ -39,7 +39,7 @@ def is_valid_board(t):
 
 
 def solve(t):
-    print('solving started')
+    print('Solving started')
 
     if not is_valid_board(t):
         print('Not valid board')
@@ -66,8 +66,8 @@ def solve(t):
             return False
 
     if backtrack([(i, j) for i in range(9) for j in range(9) if t[i][j] == 0]):
-        print('done-s')
+        print('Done-s')
         return t
     else:
         return False
-        print('done-f')
+        print('Done-f')

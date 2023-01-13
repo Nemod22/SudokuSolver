@@ -29,7 +29,7 @@ def find_board(img):
     # Finds the biggest rectangular contour
     for contour in contours:
         perimeter = cv2.arcLength(contour, True)
-        approx = cv2.approxPolyDP(contour,perimeter * 0.04 , True)
+        approx = cv2.approxPolyDP(contour, perimeter * 0.04, True)
         if len(approx) == 4:
             location = approx
             break
@@ -80,7 +80,7 @@ def displayNumbers(img, numbers, color=(0, 255, 0)):
     for i in range (9):
         for j in range (9):
             if numbers[(j*9)+i] !=0:
-                cv2.putText(img, str(numbers[(j*9)+i]), (i*W+int(W/2)-int((W/4)), int((j+0.7)*H)), cv2.FONT_HERSHEY_COMPLEX, 2, color, 2, cv2.LINE_AA)
+                cv2.putText(img, str(numbers[(j*9)+i]), (i*W+int(W/2)-int((W/4)), int((j+0.7)*H)), cv2.FONT_HERSHEY_DUPLEX, 2, color, 2, cv2.LINE_AA)
     return img
 
 
@@ -88,15 +88,11 @@ def solve_from_image_and_display(image_path, output_path):
     try:
         img = cv2.imread(image_path)
         img = imutils.resize(img, width=1080)
-        # cv2.imshow('kazi', img)
-        # cv2.waitKey()
         # extract board from input image
         board, location = find_board(img)
         gray = cv2.cvtColor(board, cv2.COLOR_BGR2GRAY)
-        # print(gray.shape)
         rois = split_boxes(gray)
         rois = np.array(rois, np.float32).reshape(81, -1, input_size, input_size, 1)
-        #print(rois)
         # get prediction
         prediction = [model.pred(i) for i in rois]
         # print(prediction)

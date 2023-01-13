@@ -43,8 +43,7 @@ class Sudoku(App):
         self.preview.disconnect_camera()
 
     @mainthread
-    def my_method(self, path):
-        print('neki')
+    def process_image(self, path):
         solve_from_image_and_display(os.path.join(os.getcwd(), 'picture_temp/photo.jpg'), os.path.join(os.getcwd(), 'picture_temp/solved.jpg'))
         self.image = Image(source=os.path.join(os.getcwd(), 'picture_temp/solved.jpg'), nocache=True)
         self.layout.clear_widgets()
@@ -57,7 +56,7 @@ class Sudoku(App):
     def build(self):
         self.layout = BoxLayout(orientation='vertical')
         self.preview = Preview()
-        self.preview.connect_camera(enable_analyze_pixels = True, filepath_callback=self.my_method)
+        self.preview.connect_camera(enable_analyze_pixels = True, filepath_callback=self.process_image)
         self.layout.add_widget(self.preview)
         self.take_photo_button = Button(text="Take Photo")
         self.take_photo_button.bind(on_press=self.take_photo)
@@ -67,7 +66,7 @@ class Sudoku(App):
 
 
     def take_photo(self, *args):
-        #captures photo and calls mymethod on completion
+        #captures photo and calls process_image on completion
         if platform == 'android':
             from android.storage import app_storage_path
             self.preview.capture_photo(location='', subdir = 'picture_temp', name = 'photo.jpg')
