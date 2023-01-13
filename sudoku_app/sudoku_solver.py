@@ -1,4 +1,5 @@
 def valid_options(t, i, j):
+    """Returns a set of all valid options for cell t[i][j]"""
     if t[i][j] != 0: return set()
 
     s = set(range(1,10))
@@ -13,8 +14,9 @@ def valid_options(t, i, j):
     return s
 
 def is_valid_board(t):
-    #checks if any number (excluding zero), is in list more than once
+    
     def distinct(l):
+        """checks if any number (excluding zero), is in list more than once"""
         for i in l:
             if i != 0:
                 if l.count(i) > 1:
@@ -37,13 +39,13 @@ def is_valid_board(t):
 
 
 def solve(t):
-    print('solving started')
+    print('Solving started')
 
     if not is_valid_board(t):
         print('Not valid board')
         return False
     
-    def sestopaj(p):
+    def backtrack(p):
         if len(p) == 0:
             return True
         else:
@@ -57,15 +59,15 @@ def solve(t):
             i, j = p.pop(k)
             for n in valid_options(t, i, j):
                 t[i][j] = n
-                if sestopaj(p):
+                if backtrack(p):
                     return True
-                t[i][j] = 0 # pomembno
+                t[i][j] = 0
             p.append((i, j))
             return False
 
-    if sestopaj([(i, j) for i in range(9) for j in range(9) if t[i][j] == 0]):
-        print('done-s')
+    if backtrack([(i, j) for i in range(9) for j in range(9) if t[i][j] == 0]):
+        print('Done-s')
         return t
     else:
         return False
-        print('done-f')
+        print('Done-f')
