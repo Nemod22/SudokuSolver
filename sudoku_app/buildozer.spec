@@ -51,7 +51,7 @@ android.presplash_color = white
 icon.filename = %(source.dir)s/data/icon.png
 
 # (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
-orientation = all
+orientation = portrait
 
 # (list) List of service to declare
 #services = NAME:ENTRYPOINT_TO_PY,NAME2:ENTRYPOINT2_TO_PY
@@ -191,7 +191,10 @@ android.api = 32
 # (list) Gradle dependencies to add
 #android.gradle_dependencies = "org.tensorflow:tensorflow-lite:+","org.tensorflow:tensorflow-lite-support:0.0.0-nightly"
 #android.gradle_dependencies = 'org.tensorflow:tensorflow-lite-task-vision-play-services:0.4.2','com.google.android.gms:play-services-tflite-gpu:16.1.0'
-android.gradle_dependencies = "org.tensorflow:tensorflow-lite:2.6.0","org.tensorflow:tensorflow-lite-support:0.0.0-nightly"
+#android.gradle_dependencies = "org.tensorflow:tensorflow-lite:2.6.0","org.tensorflow:tensorflow-lite-support:0.0.0-nightly"
+
+android.gradle_dependencies = org.tensorflow:tensorflow-lite:+,org.tensorflow:tensorflow-lite-support:+
+
 
 
 # (bool) Enable AndroidX support. Enable when 'android.gradle_dependencies'
