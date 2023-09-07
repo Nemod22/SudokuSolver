@@ -1,5 +1,5 @@
 # SudokuSolver
-Sudoku eye is an aplicatoin that detects sudoku from an image and displays the solution on to that image. It's build using kivy framework and it curently works on desktop platforms and android.
+Sudoku eye is an aplication that detects sudoku from an image and displays the solution on to that image. It's build using kivy framework and it curently works on desktop platforms and android.
 It uses openCV for sodoku board detection and projection of solution, and tensorflow (lite for android) for digits recognition.
 
 <img src="https://github.com/Nemod22/SudokuSolver/assets/32578790/291ec800-9f00-43ad-85bd-0985b36be92e" alt="Image 1" width="450px">
